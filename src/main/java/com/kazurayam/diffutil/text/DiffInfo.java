@@ -3,7 +3,12 @@ package com.kazurayam.diffutil.text;
 import com.github.difflib.text.DiffRow;
 import com.github.difflib.text.DiffRowGenerator;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.nio.file.Files;
@@ -66,6 +71,22 @@ public class DiffInfo {
         Builder(List<String> originalLines, List<String> revisedLines) {
             this.originalLines = originalLines;
             this.revisedLines = revisedLines;
+        }
+
+        Builder(InputStream is1, InputStream is2) {
+            Reader rdr1 = new InputStreamReader(is1, StandardCharsets.UTF_8);
+            this.originalLines = readAllLines(rdr1);
+            Reader rdr2 = new InputStreamReader(is2, StandardCharsets.UTF_8);
+            this.revisedLines = readAllLines(rdr2);
+        }
+
+        Builder(Reader rdr1, Reader rdr2) {
+            this.originalLines = readAllLines(rdr1);
+            this.revisedLines = readAllLines(rdr2);
+        }
+
+        private List<String> readAllLines(Reader reader) {
+            return new BufferedReader(reader).lines().collect(Collectors.toList());
         }
 
         public DiffInfo build() {

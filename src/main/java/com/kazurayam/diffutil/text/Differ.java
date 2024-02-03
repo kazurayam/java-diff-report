@@ -1,11 +1,18 @@
 package com.kazurayam.diffutil.text;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Compare 2 texts to create a report which shows the diff of the 2 inputs.
@@ -19,46 +26,22 @@ import java.util.Objects;
  * date: Feb 2024
  * @author kazurayam
  */
-public class TextsDiffer {
+public class Differ {
 
-    private TextsDiffer() {}
+    private Differ() {}
 
-    public static String diffFiles(Path file1, Path file2, Path output)
+    public static DiffInfo diffFiles(Path file1, Path file2) throws IOException {
+        return diffFiles(Paths.get("."), file1, file2);
+    }
+
+    public static DiffInfo diffFiles(Path baseDirectory, Path text1, Path text2)
             throws IOException {
-        return diffFiles(Paths.get("."), file1, file2, output,
-                DiffInfoReporter.ReportFormat.MARKDOWN);
-    }
-
-    public static String diffFiles(Path file1, Path file2, Path output,
-                                  DiffInfoReporter.ReportFormat reportFormat) throws IOException {
-        return diffFiles(Paths.get("."), file1, file2, output,
-                reportFormat);
-    }
-
-    public static String diffFiles(Path baseDir, Path text1, Path text2, Path output)
-            throws IOException {
-        return diffFiles(baseDir, text1, text2, output, DiffInfoReporter.ReportFormat.MARKDOWN);
-    }
-
-    public static String diffFiles(
-            Path baseDirectory, Path text1, Path text2, Path output,
-            DiffInfoReporter.ReportFormat reportFormat) throws IOException {
         Path baseDir = baseDirectory.toAbsolutePath();
         Path t1 = baseDir.resolve(text1).toAbsolutePath();
         Path t2 = baseDir.resolve(text2).toAbsolutePath();
         validateInputs(baseDir, t1, t2);
-
         // read all lines of the two text files to generate the diff information
-        DiffInfo diffInfo = new DiffInfo.Builder(t1, t2).build();
-
-        // compile a report
-        if (reportFormat == DiffInfoReporter.ReportFormat.MARKDOWN) {
-            StringBuilder sb = new StringBuilder();
-            throw new RuntimeException("TODO");
-        } else {
-            throw new UnsupportedOperationException(
-                    "output in HTML is yet TO BE supported");
-        }
+        return new DiffInfo.Builder(t1, t2).build();
     }
 
     private static void validateInputs(Path baseDir, Path text1, Path text2)
@@ -78,4 +61,26 @@ public class TextsDiffer {
             throw new FileNotFoundException("text2(" + text2 + ") is not present");
         }
     }
+
+    public static DiffInfo diffStrings(String text1, String text2) {
+        Objects.requireNonNull(text1);
+        Objects.requireNonNull(text2);
+        List<String> original = readAllLines(new StringReader(text1));
+        List<String> revised  = readAllLines(new StringReader(text2));
+        return new DiffInfo.Builder(original, revised).build();
+    }
+
+    /*
+     * FIXME: Proxy is not taken into account
+     */
+    public static DiffInfo diffURLs(URL url1, URL url2) throws IOException {
+        InputStream is1 = url1.openStream();
+        InputStream is2 = url2.openStream();
+        return new DiffInfo.Builder(is1, is2).build();
+    }
+
+    private static List<String> readAllLines(Reader reader) {
+        return new BufferedReader(reader).lines().collect(Collectors.toList());
+    }
+
 }
