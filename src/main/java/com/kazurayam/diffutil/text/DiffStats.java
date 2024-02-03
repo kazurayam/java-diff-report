@@ -40,6 +40,7 @@ public class DiffStats {
         private int deletedRows;
         private int changedRows;
         private int equalRows;
+
         public Builder() {
             text1location = "";
             text2location = "";

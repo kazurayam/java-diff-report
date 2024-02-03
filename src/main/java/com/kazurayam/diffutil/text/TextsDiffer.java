@@ -1,12 +1,10 @@
 package com.kazurayam.diffutil.text;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -23,45 +21,48 @@ import java.util.Objects;
  */
 public class TextsDiffer {
 
-    private ReportFormat reportFormat = ReportFormat.MARKDOWN;
+    private TextsDiffer() {}
 
-    public TextsDiffer() {}
-
-    public TextsDiffer(ReportFormat reportFormat) {
-        this.reportFormat = reportFormat;
-    }
-    public final String diffFiles(File file1, File file2, File output)
+    public static String diffFiles(Path file1, Path file2, Path output)
             throws IOException {
-        return diffFiles(file1.toPath(), file2.toPath(), output.toPath());
+        return diffFiles(Paths.get("."), file1, file2, output,
+                DiffInfoReporter.ReportFormat.MARKDOWN);
     }
 
-    public final String diffFiles(Path file1, Path file2, Path output)
-            throws IOException {
-        return this.diffFiles(Paths.get("."), file1, file2, output);
+    public static String diffFiles(Path file1, Path file2, Path output,
+                                  DiffInfoReporter.ReportFormat reportFormat) throws IOException {
+        return diffFiles(Paths.get("."), file1, file2, output,
+                reportFormat);
     }
 
-    public final String diffFiles(Path baseDirectory, Path text1, Path text2, Path output)
+    public static String diffFiles(Path baseDir, Path text1, Path text2, Path output)
             throws IOException {
+        return diffFiles(baseDir, text1, text2, output, DiffInfoReporter.ReportFormat.MARKDOWN);
+    }
+
+    public static String diffFiles(
+            Path baseDirectory, Path text1, Path text2, Path output,
+            DiffInfoReporter.ReportFormat reportFormat) throws IOException {
         Path baseDir = baseDirectory.toAbsolutePath();
         Path t1 = baseDir.resolve(text1).toAbsolutePath();
         Path t2 = baseDir.resolve(text2).toAbsolutePath();
         validateInputs(baseDir, t1, t2);
 
-        // read all lines of the two text files
-        List<String> original = Files.readAllLines(t1);
-        List<String> revised = Files.readAllLines(t2);
-        DiffInfo diffInfo = new DiffInfo(original, revised);
+        // read all lines of the two text files to generate the diff information
+        DiffInfo diffInfo = new DiffInfo.Builder(t1, t2).build();
 
         // compile a report
-        if (reportFormat == ReportFormat.MARKDOWN) {
+        if (reportFormat == DiffInfoReporter.ReportFormat.MARKDOWN) {
             StringBuilder sb = new StringBuilder();
             throw new RuntimeException("TODO");
         } else {
-            throw new UnsupportedOperationException("output in HTML is yet TO BE supported");
+            throw new UnsupportedOperationException(
+                    "output in HTML is yet TO BE supported");
         }
     }
 
-    private void validateInputs(Path baseDir, Path text1, Path text2) throws FileNotFoundException {
+    private static void validateInputs(Path baseDir, Path text1, Path text2)
+            throws FileNotFoundException {
         if (baseDir == null) {
             throw new IllegalArgumentException("baseDir must not be null");
         }
