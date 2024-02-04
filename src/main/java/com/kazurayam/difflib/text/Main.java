@@ -1,13 +1,12 @@
-package com.kazurayam.diffutil.text;
+package com.kazurayam.difflib.text;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Main {
+public final class Main {
 
     private Path original;
     private Path revised;
@@ -36,22 +35,34 @@ public class Main {
         this.output = output;
     }
 
-    public void execute() throws IOException {
+    public void compileMarkdownReport() throws IOException {
         DiffInfo diffInfo = Differ.diffFiles(original, revised);
         Files.writeString(output,
-                DiffInfoReporter.compileMarkdownReport(diffInfo));
-        System.out.println(DiffInfoReporter.compileStatsJson(diffInfo));
+                DiffInfoMarkdownReporter.compileMarkdownReport(diffInfo));
+        System.out.println(DiffInfoMarkdownReporter.compileStatsJson(diffInfo));
     }
 
     public static void main(String[] args) throws IOException {
         if (args.length < 3) {
-            System.err.println("Usage: Main <original file path> <revised file path> <output file path>");
+            System.err.println("Usage: java -jar java-diff-report.jar " +
+                    "<original file path> <revised file path> <output file path> [markdown|html]");
             System.exit(-1);
+        }
+        String format = "markdown";
+        if (args.length >= 4) {
+            format = args[3];
         }
         Main instance = new Main();
         instance.setOriginal(Paths.get(args[0]));
         instance.setRevised(Paths.get(args[1]));
         instance.setOutput(Paths.get(args[2]));
-        instance.execute();
+
+        if (format.equals("markdown")) {
+            instance.compileMarkdownReport();
+        } else if (format.equals("html")) {
+            System.err.println("report in HTML is yet to be supported");
+        } else {
+            System.err.printf("report format %s is not supported%n", format);
+        }
     }
 }

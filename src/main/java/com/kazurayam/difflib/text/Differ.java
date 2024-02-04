@@ -1,4 +1,4 @@
-package com.kazurayam.diffutil.text;
+package com.kazurayam.difflib.text;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -9,7 +9,6 @@ import java.io.StringReader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -26,40 +25,21 @@ import java.util.stream.Collectors;
  * date: Feb 2024
  * @author kazurayam
  */
-public class Differ {
+public final class Differ {
 
     private Differ() {}
 
     public static DiffInfo diffFiles(Path file1, Path file2) throws IOException {
-        return diffFiles(Paths.get("."), file1, file2);
-    }
-
-    public static DiffInfo diffFiles(Path baseDirectory, Path text1, Path text2)
-            throws IOException {
-        Path baseDir = baseDirectory.toAbsolutePath();
-        Path t1 = baseDir.resolve(text1).toAbsolutePath();
-        Path t2 = baseDir.resolve(text2).toAbsolutePath();
-        validateInputs(baseDir, t1, t2);
+        Objects.requireNonNull(file1);
+        if (!Files.exists(file1)) {
+            throw new FileNotFoundException("file1(" + file1 + ") is not present");
+        }
+        Objects.requireNonNull(file2);
+        if (!Files.exists(file2)) {
+            throw new FileNotFoundException("file2(" + file2 + ") is not present");
+        }
         // read all lines of the two text files to generate the diff information
-        return new DiffInfo.Builder(t1, t2).build();
-    }
-
-    private static void validateInputs(Path baseDir, Path text1, Path text2)
-            throws FileNotFoundException {
-        if (baseDir == null) {
-            throw new IllegalArgumentException("baseDir must not be null");
-        }
-        if (!Files.exists(baseDir)) {
-            throw new FileNotFoundException("basedir(" + baseDir + ") is not present");
-        }
-        Objects.requireNonNull(text1);
-        if (!Files.exists(text1)) {
-            throw new FileNotFoundException("text1(" + text1 + ") is not present");
-        }
-        Objects.requireNonNull(text2);
-        if (!Files.exists(text2)) {
-            throw new FileNotFoundException("text2(" + text2 + ") is not present");
-        }
+        return new DiffInfo.Builder(file1, file2).build();
     }
 
     public static DiffInfo diffStrings(String text1, String text2) {

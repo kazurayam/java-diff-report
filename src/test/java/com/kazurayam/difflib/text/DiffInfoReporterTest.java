@@ -1,5 +1,7 @@
-package com.kazurayam.diffutil.text;
+package com.kazurayam.difflib.text;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kazurayam.unittest.TestOutputOrganizer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,9 +32,12 @@ public class DiffInfoReporterTest {
     }
 
     @Test
-    public void testCompileJsonReport() {
-        String report = DiffInfoReporter.compileStatsJson(diffInfo);
-        logger.info("[testCompileJsonReport]\n" + report);
+    public void testCompileStatsJson() throws JsonProcessingException {
+        String report = DiffInfoMarkdownReporter.compileStatsJson(diffInfo);
+        logger.debug("[testCompileJsonReport]\n" + report);
+        // check if the report string is a valid JSON syntactically
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.readTree(report);
         assertThat(report)
                 .contains("rows")
                 .contains("isDifferent")
@@ -44,11 +49,11 @@ public class DiffInfoReporterTest {
 
     @Test
     public void testCompileMarkdownReport() {
-        String report = DiffInfoReporter.compileMarkdownReport(diffInfo);
-        logger.info("[testCompileMarkdownReport]\n" + report);
+        String report = DiffInfoMarkdownReporter.compileMarkdownReport(diffInfo);
+        logger.debug("[testCompileMarkdownReport]\n" + report);
         assertThat(report)
                 .contains("**DIFFERENT**")
                 .contains("|row#|S|original|revised|")
-                .contains("|-----|-|--------|-------|");
+                .contains("|----|-|--------|-------|");
     }
 }

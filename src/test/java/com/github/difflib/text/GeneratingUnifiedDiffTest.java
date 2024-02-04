@@ -43,7 +43,7 @@ public class GeneratingUnifiedDiffTest {
         List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff(originalFile, revisedFile,
                 origLines, patch, 10);
 
-        logger.info("[verify] " + unifiedDiff.stream().collect(joining("\n")));
+        logger.debug("[verify] " + unifiedDiff.stream().collect(joining("\n")));
 
         Patch<String> fromUnifiedPath = UnifiedDiffUtils.parseUnifiedDiff(unifiedDiff);
         List<String> patchedLines;

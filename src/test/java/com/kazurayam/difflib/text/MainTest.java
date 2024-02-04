@@ -1,4 +1,4 @@
-package com.kazurayam.diffutil.text;
+package com.kazurayam.difflib.text;
 
 import com.kazurayam.unittest.TestOutputOrganizer;
 import org.junit.jupiter.api.BeforeAll;

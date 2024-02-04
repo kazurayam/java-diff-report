@@ -1,4 +1,4 @@
-package com.kazurayam.diffutil.text;
+package com.kazurayam.difflib.text;
 
 import com.github.difflib.text.DiffRow;
 import com.github.difflib.text.DiffRowGenerator;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class DiffInfo {
+public final class DiffInfo {
     private String pathOriginal = null;
     private String pathRevised = null;
     private final List<DiffRow> rows;

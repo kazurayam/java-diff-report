@@ -43,6 +43,8 @@ dependencies {
     testImplementation 'com.kazurayam:unittest-helper:0.3.0'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
     testImplementation 'org.slf4j:slf4j-simple:2.0.11'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
 }
 
 test {
