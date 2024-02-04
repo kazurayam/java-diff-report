@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class DiffInfoMarkdownReporter {
+public final class DiffInfoReporter {
 
-    private static final Logger logger = LoggerFactory.getLogger(DiffInfoMarkdownReporter.class);
+    private static final Logger logger = LoggerFactory.getLogger(DiffInfoReporter.class);
 
-    private DiffInfoMarkdownReporter() {}
+    private DiffInfoReporter() {}
 
     public static String compileStatsJson(DiffInfo diffInfo) {
         Objects.requireNonNull(diffInfo);
@@ -71,7 +71,7 @@ public final class DiffInfoMarkdownReporter {
         if (compact) {
             // in the Compact format; hide the equal lines to shrink the report in size
             List<NDRDivision> container =
-                    DiffInfoMarkdownReporter.divideDiffRowsCompact(allRows);
+                    DiffInfoReporter.divideDiffRowsCompact(allRows);
             for (int cx = 0; cx < container.size(); cx++) {
                 NDRDivision division = container.get(cx);
                 if (cx == 0 && division.get(0).getSeq() > 1) {
@@ -104,10 +104,10 @@ public final class DiffInfoMarkdownReporter {
         return sb.toString();
     }
 
-    private static String gap() { return "| | | | |"; }
+    private static String gap() { return "|...| | | |"; }
 
     private static String formatDiffRow(int seq, DiffRow diffRow) {
-        return String.format("| %d | %s | %s | %s |", seq, DiffInfoMarkdownReporter.formatStatus(diffRow),
+        return String.format("| %d | %s | %s | %s |", seq, DiffInfoReporter.formatStatus(diffRow),
                 diffRow.getOldLine(), diffRow.getNewLine());
     }
 
@@ -158,9 +158,30 @@ public final class DiffInfoMarkdownReporter {
             }
         }
         // merge the overlapping divisions
+        List<NDRDivision> noOverlaps = mergeOverlaps(container);
+        // done
+        return noOverlaps;
+    }
 
-
-        return container;
+    static List<NDRDivision> mergeOverlaps(List<NDRDivision> list) {
+        if (list.size() >= 2) {
+            NDRDivision first = list.get(0);
+            NDRDivision second = list.get(1);
+            if (first.overlapsWith(second)) {
+                first.merge(second);
+                List<NDRDivision> newList = new ArrayList<>();
+                newList.add(first);
+                newList.addAll(list.subList(2, list.size()));
+                return mergeOverlaps(newList);
+            } else {
+                List<NDRDivision> newList = new ArrayList<>();
+                newList.add(first);
+                newList.addAll(mergeOverlaps(list.subList(1, list.size())));
+                return newList;
+            }
+        } else {
+            return list;
+        }
     }
 
     static List<NumberedDiffRow> toNumberedDiffRows(List<DiffRow> diffRows) {

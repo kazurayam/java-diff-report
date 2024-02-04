@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class NDRDivision {
     private List<NumberedDiffRow> listNDR;
@@ -17,34 +18,33 @@ public class NDRDivision {
         listNDR.add(ndr);
     }
     public boolean overlapsWith(NDRDivision other) {
-        if (other.end() <= this.begin()) return false;
-        if (this.end() < other.begin()) return false;
+        if (this.lastSeq() < other.firstSeq()) return false;
+        if (other.lastSeq() < this.firstSeq()) return false;
         return true;
     }
     public void merge(NDRDivision other) {
         Set<NumberedDiffRow> bag = new HashSet<>();
         bag.addAll(this.getList());
         bag.addAll(other.getList());
-        List<NumberedDiffRow> mergeResult = bag.stream().sorted().toList();
-        this.listNDR = mergeResult;
+        this.listNDR = bag.stream().sorted().collect(Collectors.toList());
     }
     public NumberedDiffRow get(int i) {
         return this.listNDR.get(i);
     }
     public NumberedDiffRow getFist() {
-        return this.listNDR.getFirst();
+        return this.listNDR.get(0);
     }
     public NumberedDiffRow getLast() {
-        return this.listNDR.getLast();
+        return this.listNDR.get(listNDR.size() - 1);
     }
     public List<NumberedDiffRow> getList() {
         return this.listNDR;
     }
-    public int begin() {
-        return this.listNDR.getFirst().getSeq();
+    public int firstSeq() {
+        return this.listNDR.get(0).getSeq();
     }
-    public int end() {
-        return this.listNDR.getLast().getSeq();
+    public int lastSeq() {
+        return this.listNDR.get(listNDR.size() - 1).getSeq();
     }
     public int size() { return this.listNDR.size(); }
 }

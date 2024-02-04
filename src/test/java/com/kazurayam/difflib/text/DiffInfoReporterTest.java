@@ -33,7 +33,7 @@ public class DiffInfoReporterTest {
 
     @Test
     public void testCompileStatsJson() throws JsonProcessingException {
-        String report = DiffInfoMarkdownReporter.compileStatsJson(diffInfo);
+        String report = DiffInfoReporter.compileStatsJson(diffInfo);
         logger.debug("[testCompileJsonReport]\n" + report);
         // check if the report string is a valid JSON syntactically
         ObjectMapper mapper = new ObjectMapper();
@@ -49,7 +49,7 @@ public class DiffInfoReporterTest {
 
     @Test
     public void testCompileMarkdownReport() {
-        String report = DiffInfoMarkdownReporter.compileMarkdownReport(diffInfo);
+        String report = DiffInfoReporter.compileMarkdownReport(diffInfo);
         logger.debug("[testCompileMarkdownReport]\n" + report);
         assertThat(report)
                 .contains("**DIFFERENT**")

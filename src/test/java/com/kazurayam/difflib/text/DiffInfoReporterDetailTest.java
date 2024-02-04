@@ -11,13 +11,13 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DiffInfoReporterCompactionTest {
+public class DiffInfoReporterDetailTest {
 
-    private static Logger logger = LoggerFactory.getLogger(DiffInfoReporterCompactionTest.class);
+    private static Logger logger = LoggerFactory.getLogger(DiffInfoReporterDetailTest.class);
 
     private static final TestOutputOrganizer too =
-            new TestOutputOrganizer.Builder(DiffInfoReporterCompactionTest.class)
-                    .subDirPath(DiffInfoReporterCompactionTest.class)
+            new TestOutputOrganizer.Builder(DiffInfoReporterDetailTest.class)
+                    .subDirPath(DiffInfoReporterDetailTest.class)
                     .build();
     private static final Path fixturesDir = too.getProjectDir().resolve("src/test/fixtures");
     private static final Path text1 = fixturesDir.resolve("text1.txt");
@@ -31,13 +31,13 @@ public class DiffInfoReporterCompactionTest {
 
     @Test
     public void test_mdDetail_full() {
-        String report = DiffInfoMarkdownReporter.mdDetail(diffInfo, false);
+        String report = DiffInfoReporter.mdDetail(diffInfo, false);
         logger.debug("[test_mdDetail_full]\n" + report);
     }
 
     @Test
     public void test_mdDetail_compact() {
-        String report = DiffInfoMarkdownReporter.mdDetail(diffInfo, true);
+        String report = DiffInfoReporter.mdDetail(diffInfo, true);
         logger.debug("[test_mdDetail_compact]\n" + report);
     }
 

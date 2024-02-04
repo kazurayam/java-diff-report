@@ -38,8 +38,8 @@ public final class Main {
     public void compileMarkdownReport() throws IOException {
         DiffInfo diffInfo = Differ.diffFiles(original, revised);
         Files.writeString(output,
-                DiffInfoMarkdownReporter.compileMarkdownReport(diffInfo));
-        System.out.println(DiffInfoMarkdownReporter.compileStatsJson(diffInfo));
+                DiffInfoReporter.compileMarkdownReport(diffInfo));
+        System.out.println(DiffInfoReporter.compileStatsJson(diffInfo));
     }
 
     public static void main(String[] args) throws IOException {
