@@ -30,3 +30,5 @@ Output:
 - link:https://kazurayam.github.io/java-diff-report/sample-report.md[]
 
 This will be rendered as this:
+
+image:images/sample-report-fullpage-screenshot.png[]]
