@@ -4,13 +4,13 @@ import com.github.difflib.text.DiffRow;
 
 public class NumberedDiffRow implements Comparable<NumberedDiffRow> {
 
-    private final int seq;
+    private final int sequenceNumber;
     private final DiffRow diffRow;
-    public NumberedDiffRow(int seq, DiffRow diffRow) {
-        this.seq = seq;
+    public NumberedDiffRow(int sequenceNumber, DiffRow diffRow) {
+        this.sequenceNumber = sequenceNumber;
         this.diffRow = diffRow;
     }
-    public int getSeq() { return seq; }
+    public int getNumber() { return sequenceNumber; }
     public DiffRow getDiffRow() { return diffRow; }
     boolean isTaggedInsertedDeletedChanged() {
         return (this.getDiffRow().getTag() == DiffRow.Tag.INSERT ||
@@ -27,11 +27,11 @@ public class NumberedDiffRow implements Comparable<NumberedDiffRow> {
             return false;
         }
         NumberedDiffRow other = (NumberedDiffRow)obj;
-        return this.seq == other.getSeq();
+        return this.sequenceNumber == other.getNumber();
     }
 
     @Override
     public int compareTo(NumberedDiffRow other) {
-        return this.seq - other.getSeq();
+        return this.sequenceNumber - other.getNumber();
     }
 }

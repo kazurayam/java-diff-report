@@ -42,14 +42,14 @@ public class NumberedDiffRowTest {
     }
 
     @Test
-    public void test_getSeq() {
-        NumberedDiffRow ndr = listNDR.getFirst();
-        assertThat(ndr.getSeq()).isEqualTo(1);
+    public void test_getNumber() {
+        NumberedDiffRow ndr = listNDR.get(0);
+        assertThat(ndr.getNumber()).isEqualTo(1);
     }
 
     @Test
     public void test_getDiffRow() {
-        NumberedDiffRow ndr = listNDR.getFirst();
+        NumberedDiffRow ndr = listNDR.get(listNDR.size() - 1);
         assertThat(ndr.getDiffRow().getTag()).isEqualTo(DiffRow.Tag.EQUAL);
     }
 }

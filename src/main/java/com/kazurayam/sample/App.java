@@ -2,7 +2,7 @@ package com.kazurayam.sample;
 
 import com.kazurayam.difflib.text.Differ;
 import com.kazurayam.difflib.text.DiffInfo;
-import com.kazurayam.difflib.text.DiffInfoReporter;
+import com.kazurayam.difflib.text.MarkdownReporter;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,8 +16,8 @@ public class App {
         Files.createDirectories(output.getParent());
 
         DiffInfo diffInfo = Differ.diffFiles(original, revised);
-        DiffInfoReporter reporter = new DiffInfoReporter.Builder(diffInfo).build();
+        MarkdownReporter reporter = new MarkdownReporter.Builder(diffInfo).build();
         Files.writeString(output, reporter.compileMarkdownReport());
-        System.out.println(reporter.compileStatsJson());
+        System.out.println(reporter.compileStats());
     }
 }

@@ -13,13 +13,13 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DiffInfoReporterTest {
+public class MarkdownReporterTest {
 
-    private static Logger logger = LoggerFactory.getLogger(DiffInfoReporterTest.class);
+    private static Logger logger = LoggerFactory.getLogger(MarkdownReporterTest.class);
 
     private static final TestOutputOrganizer too =
-            new TestOutputOrganizer.Builder(DiffInfoReporterTest.class)
-                    .subDirPath(DiffInfoReporterTest.class)
+            new TestOutputOrganizer.Builder(MarkdownReporterTest.class)
+                    .subDirPath(MarkdownReporterTest.class)
                     .build();
     private static final Path fixturesDir = too.getProjectDir().resolve("src/test/fixtures");
     private static final Path text1 = fixturesDir.resolve("left.html");
@@ -32,25 +32,26 @@ public class DiffInfoReporterTest {
     }
 
     @Test
-    public void testCompileStatsJson() throws JsonProcessingException {
-        DiffInfoReporter reporter = new DiffInfoReporter.Builder(diffInfo).build();
-        String stats = reporter.compileStatsJson();
-        logger.debug("[testCompileJsonReport]\n" + stats);
-        // check if the report string is a valid JSON syntactically
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.readTree(stats);
-        assertThat(stats)
-                .contains("rows")
-                .contains("isDifferent")
-                .contains("insertedRows")
-                .contains("deletedRows")
-                .contains("changedRows")
-                .contains("equalRows");
+    public void test_mdDetail_full() {
+        String report = MarkdownReporter.mdDetail(diffInfo, false);
+        logger.debug("[test_mdDetail_full]\n" + report);
+    }
+
+    @Test
+    public void test_mdDetail_compact() {
+        String report = MarkdownReporter.mdDetail(diffInfo, true);
+        logger.debug("[test_mdDetail_compact]\n" + report);
+    }
+
+    @Test
+    public void testCompact() {
+        MarkdownReporter reporter = new MarkdownReporter.Builder(diffInfo).compact(false).build();
+        assertThat(reporter.getCompact()).isFalse();
     }
 
     @Test
     public void testCompileMarkdownReport() {
-        DiffInfoReporter reporter = new DiffInfoReporter.Builder(diffInfo).build();
+        MarkdownReporter reporter = new MarkdownReporter.Builder(diffInfo).build();
         String report = reporter.compileMarkdownReport();
         logger.debug("[testCompileMarkdownReport]\n" + report);
         assertThat(report)

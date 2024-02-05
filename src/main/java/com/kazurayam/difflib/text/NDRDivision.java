@@ -40,11 +40,18 @@ public class NDRDivision {
     public List<NumberedDiffRow> getList() {
         return this.listNDR;
     }
+    public List<Integer> getSeqList() {
+        List<Integer> seqList = new ArrayList<>();
+        for (NumberedDiffRow ndr : listNDR) {
+            seqList.add(ndr.getNumber());
+        }
+        return seqList;
+    }
     public int firstSeq() {
-        return this.listNDR.get(0).getSeq();
+        return this.listNDR.get(0).getNumber();
     }
     public int lastSeq() {
-        return this.listNDR.get(listNDR.size() - 1).getSeq();
+        return this.listNDR.get(listNDR.size() - 1).getNumber();
     }
     public int size() { return this.listNDR.size(); }
 }

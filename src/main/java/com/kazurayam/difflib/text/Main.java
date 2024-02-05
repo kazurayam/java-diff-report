@@ -37,9 +37,9 @@ public final class Main {
 
     public void compileMarkdownReport() throws IOException {
         DiffInfo diffInfo = Differ.diffFiles(original, revised);
-        DiffInfoReporter reporter = new DiffInfoReporter.Builder(diffInfo).build();
+        MarkdownReporter reporter = new MarkdownReporter.Builder(diffInfo).build();
         Files.writeString(output, reporter.compileMarkdownReport());
-        System.out.println(reporter.compileStatsJson());
+        System.out.println(reporter.compileStats());
     }
 
     public static void main(String[] args) throws IOException {
