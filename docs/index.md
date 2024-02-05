@@ -1,50 +1,34 @@
-- Table of contents
-{:toc}
+**DIFFERENT**
 
-# java-diff-report
+- inserted rows : 1
+- deleted rows  : 2
+- changed rows  : 4
+- equal rows:   : 20
 
-## What is this for
-
-The java-diff-report is a small Java libary which aims to supplement the [java-diff-utils](https://github.com/java-diff-utils/java-diff-utils) library. The java-diff-report accepts 2 input texts (as Files, Paths, Strings, URLs) and call the java-diff-utils to generate the Diff. The java-diff-report accepts the output Diff info from the java-diff-utils libary and compiles a report in Markdown format.
-
-## How to get the jar
-
-The jar is available at
-
--   [Maven Central](https://mvnrepository.com/artifact/com.kazurayam/java-diff-report)
-
--   [Releases page](https://github.com/kazurayam/java-diff-report/releases) of the project’s GitHub repository
-
-## API Javadoc
-
--   [javadoc](https://kazurayam.github.io/java-diff-report/api/)
-
-## Sample usage
-
-    package com.kazurayam.sample;
-
-    import com.kazurayam.difflib.text.Differ;
-    import com.kazurayam.difflib.text.DiffInfo;
-    import com.kazurayam.difflib.text.DiffInfoReporter;
-
-    import java.nio.file.Files;
-    import java.nio.file.Path;
-    import java.nio.file.Paths;
-
-    public class App {
-        public static void main(String[] args) throws Exception {
-            Path original = Paths.get("./src/test/fixtures/text1.txt");
-            Path revised = Paths.get("./src/test/fixtures/text2.txt");
-            Path output = Paths.get("./build/temp/report.md");
-            Files.createDirectories(output.getParent());
-
-            DiffInfo diffInfo = Differ.diffFiles(original, revised);
-            Files.writeString(output,
-                    DiffInfoReporter.compileMarkdownReport(diffInfo));
-            System.out.println(DiffInfoReporter.compileStatsJson(diffInfo));
-        }
-    }
-
-Output:
-
--   <https://kazurayam.github.io/java-diff-report/sample-report.md>
+|row#|S|original|revised|
+|----|-|--------|-------|
+| 1 |   | aaa | aaa |
+| 2 | I |  | <span style="color:green; font-weight:bold; background-color:#e6ffec">ABC</span> |
+| 3 |   | bbb | bbb |
+| 4 |   | ccc | ccc |
+| 5 |   | ddd | ddd |
+| 6 | C | <span style="color:red; font-weight:bold; background-color:#ffeef0">eee</span> | <span style="color:green; font-weight:bold; background-color:#e6ffec">EEE</span> |
+| 7 |   | fff | fff |
+| 8 |   | ggg | ggg |
+| 9 |   | hhh | hhh |
+| 10 | D | <span style="color:red; font-weight:bold; background-color:#ffeef0">iii</span> |  |
+| 11 |   | jjj | jjj |
+| 12 |   | kkk | kkk |
+|...| | | |
+| 15 |   | nnn | nnn |
+| 16 |   | ooo | ooo |
+| 17 | C | <span style="color:red; font-weight:bold; background-color:#ffeef0">ppp</span> | <span style="color:green; font-weight:bold; background-color:#e6ffec">PPP</span> |
+| 18 | C | <span style="color:red; font-weight:bold; background-color:#ffeef0">qqq</span> | <span style="color:green; font-weight:bold; background-color:#e6ffec">QQQ</span> |
+| 19 | C | <span style="color:red; font-weight:bold; background-color:#ffeef0">rrr</span> | <span style="color:green; font-weight:bold; background-color:#e6ffec">RRR</span> |
+| 20 |   | sss | sss |
+| 21 |   | ttt | ttt |
+|...| | | |
+| 24 |   | www | www |
+| 25 |   | xxx | xxx |
+| 26 | D | <span style="color:red; font-weight:bold; background-color:#ffeef0">yyy</span> |  |
+| 27 |   | zzz | zzz |
