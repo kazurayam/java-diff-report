@@ -16,7 +16,10 @@ public class App {
         Files.createDirectories(output.getParent());
 
         DiffInfo diffInfo = Differ.diffFiles(original, revised);
-        MarkdownReporter reporter = new MarkdownReporter.Builder(diffInfo).build();
+        MarkdownReporter reporter =
+                new MarkdownReporter.Builder(diffInfo)
+                        .title("Sample diff report of 2 text files")
+                        .build();
         Files.writeString(output, reporter.compileMarkdownReport());
         System.out.println(reporter.compileStats());
     }
