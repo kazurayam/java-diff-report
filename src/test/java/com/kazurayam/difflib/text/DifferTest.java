@@ -33,7 +33,8 @@ public class DifferTest {
         Path output = too.getMethodOutputDirectory("test_diffFiles_premiere")
                 .resolve("diffReport.md");
         DiffInfo diffInfo = Differ.diffFiles(text1, text2);
-        logger.debug("[test_diffFiles_premiere] " + DiffInfoReporter.compileStatsJson(diffInfo));
+        DiffInfoReporter reporter = new DiffInfoReporter.Builder(diffInfo).build();
+        logger.debug("[test_diffFiles_premiere] " + reporter.compileStatsJson());
     }
 
     @Test
@@ -41,7 +42,8 @@ public class DifferTest {
         String original = String.join("\n", Files.readAllLines(text1));
         String revised  = String.join("\n", Files.readAllLines(text2));
         DiffInfo diffInfo = Differ.diffStrings(original, revised);
-        String stats = DiffInfoReporter.compileStatsJson(diffInfo);
+        DiffInfoReporter reporter = new DiffInfoReporter.Builder(diffInfo).build();
+        String stats = reporter.compileStatsJson();
         logger.debug("[test_diffStrings_writeFile] " + stats);
         assertThat(stats).contains("equalRows");
     }
@@ -54,9 +56,10 @@ public class DifferTest {
         Path output = too.getMethodOutputDirectory("test_diffStrings")
                 .resolve("report.md");
         DiffInfo diffInfo = Differ.diffStrings(original, revised);
-        String stats = DiffInfoReporter.compileStatsJson(diffInfo);
+        DiffInfoReporter reporter = new DiffInfoReporter.Builder(diffInfo).build();
+        String stats = reporter.compileStatsJson();
         logger.debug("[test_diffStrings_writeFile] " + stats);
-        Files.writeString(output, DiffInfoReporter.compileMarkdownReport(diffInfo));
+        Files.writeString(output, reporter.compileMarkdownReport());
         assertThat(output).exists();
     }
 
@@ -69,11 +72,11 @@ public class DifferTest {
         Path output = too.getMethodOutputDirectory(methodName)
                 .resolve("report.md");
         DiffInfo diffInfo = Differ.diffURLs(original, revised);
-        String stats = DiffInfoReporter.compileStatsJson(diffInfo);
+        DiffInfoReporter reporter = new DiffInfoReporter.Builder(diffInfo).build();
+        String stats = reporter.compileStatsJson();
         logger.debug("[" + methodName + "] " + stats);
-        Files.writeString(output, DiffInfoReporter.compileMarkdownReport(diffInfo));
+        Files.writeString(output, reporter.compileMarkdownReport());
         assertThat(output).exists();
-
     }
 
 }

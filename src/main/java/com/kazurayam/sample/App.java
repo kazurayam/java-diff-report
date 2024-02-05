@@ -16,8 +16,8 @@ public class App {
         Files.createDirectories(output.getParent());
 
         DiffInfo diffInfo = Differ.diffFiles(original, revised);
-        Files.writeString(output,
-                DiffInfoReporter.compileMarkdownReport(diffInfo));
-        System.out.println(DiffInfoReporter.compileStatsJson(diffInfo));
+        DiffInfoReporter reporter = new DiffInfoReporter.Builder(diffInfo).build();
+        Files.writeString(output, reporter.compileMarkdownReport());
+        System.out.println(reporter.compileStatsJson());
     }
 }
