@@ -1,7 +1,5 @@
 package com.kazurayam.difflib.text;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kazurayam.unittest.TestOutputOrganizer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -9,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,6 +18,7 @@ public class MarkdownReporterTest {
 
     private static final TestOutputOrganizer too =
             new TestOutputOrganizer.Builder(MarkdownReporterTest.class)
+                    .outputDirPath("build/tmp/testOutput")
                     .subDirPath(MarkdownReporterTest.class)
                     .build();
     private static final Path fixturesDir = too.getProjectDir().resolve("src/test/fixtures");
@@ -50,13 +50,32 @@ public class MarkdownReporterTest {
     }
 
     @Test
-    public void testCompileMarkdownReport() {
-        MarkdownReporter reporter = new MarkdownReporter.Builder(diffInfo).build();
+    public void testCompileMarkdownReport() throws IOException {
+        String methodName = "testCompileMarkdownReport";
+        MarkdownReporter reporter = new MarkdownReporter.Builder(diffInfo)
+                .title("Sample diff report of 2 HTML files")
+                .pathOriginal(text1.toString())
+                .pathRevised(text2.toString())
+                .build();
+
         String report = reporter.compileMarkdownReport();
-        logger.debug("[testCompileMarkdownReport]\n" + report);
+        logger.debug(String.format("[%s]\n%s", methodName, report));
         assertThat(report)
+                .contains("- original")
+                .contains("- revised")
                 .contains("**DIFFERENT**")
                 .contains("|row#|S|original|revised|")
                 .contains("|----|-|--------|-------|");
+        too.cleanMethodOutputDirectory(methodName);
+        Path output = too.getMethodOutputDirectory(methodName).resolve("output.md");
+        Files.writeString(output, report);
+    }
+
+    @Test
+    public void test_title() {
+        String title = "γνῶθι σεαυτόν";
+        MarkdownReporter reporter = new MarkdownReporter.Builder(diffInfo).title(title).build();
+        String report = reporter.compileMarkdownReport();
+        assertThat(report).contains(String.format("## %s", title));
     }
 }

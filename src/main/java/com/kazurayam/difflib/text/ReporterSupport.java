@@ -2,6 +2,8 @@ package com.kazurayam.difflib.text;
 
 import com.github.difflib.text.DiffRow;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,5 +104,23 @@ public final class ReporterSupport {
         } else {
             return list;
         }
+    }
+
+    static String shortenPathString(String pathString) {
+        try {
+            Path p = Paths.get(pathString);
+            String userHome = System.getProperty("user.home");
+            String ps = p.toAbsolutePath().normalize().toString();
+            if (ps.startsWith(userHome)) {
+                Path base = Paths.get(userHome);
+                Path relative = base.relativize(p);
+                return "~/" + relative;
+            } else {
+                return pathString;
+            }
+        } catch (Exception e) {
+            return pathString;
+        }
+
     }
 }

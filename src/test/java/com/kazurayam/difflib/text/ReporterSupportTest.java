@@ -46,4 +46,13 @@ public class ReporterSupportTest {
                 .contains("changedRows")
                 .contains("equalRows");
     }
+
+    @Test
+    public void test_shortenPathString() {
+        String path1 = ReporterSupport.shortenPathString(text1.toString());
+        logger.debug("[test_shortenPathString] path1=" + path1);
+        assertThat(path1)
+                .startsWith("~/")
+                .endsWith("/text1.txt");
+    }
 }

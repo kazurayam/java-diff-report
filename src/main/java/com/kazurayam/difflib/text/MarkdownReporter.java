@@ -4,6 +4,8 @@ import com.github.difflib.text.DiffRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,12 +13,18 @@ public final class MarkdownReporter {
 
     private static final Logger logger = LoggerFactory.getLogger(MarkdownReporter.class);
 
-    private DiffInfo diffInfo;
-    private boolean compact;
+    private final DiffInfo diffInfo;
+    private final boolean compact;
+    private final String title;
+    private final String pathOriginal;
+    private final String pathRevised;
 
     private MarkdownReporter(Builder builder) {
         this.diffInfo = builder.diffInfo;
         this.compact = builder.compact;
+        this.title = builder.title;
+        this.pathOriginal = builder.pathOriginal;
+        this.pathRevised = builder.pathRevised;
     }
 
     public boolean getCompact() {
@@ -26,12 +34,31 @@ public final class MarkdownReporter {
 
     public String compileMarkdownReport() {
         StringBuilder sb = new StringBuilder();
-        sb.append(mdDifferentOrNot(diffInfo));
+        if (title != null) {
+            sb.append(String.format("## %s\n", title));
+        }
+        if (pathOriginal != null || pathRevised != null) {
+            sb.append("### Sources\n");
+        }
+        if (pathOriginal != null) {
+            sb.append("- original : " + ReporterSupport.shortenPathString(pathOriginal) + "\n");
+        }
+        if (pathRevised != null) {
+            sb.append("- revised : " + ReporterSupport.shortenPathString(pathRevised) + "\n");
+        }
+        sb.append("\n");
+        sb.append("### Stats\n");
+        sb.append(String.format(" %s at %s", mdDifferentOrNot(diffInfo), timestamp()));
         sb.append("\n");
         sb.append(mdStats(diffInfo));
         sb.append("\n");
+        sb.append("### Detail\n");
         sb.append(mdDetail(diffInfo, compact));
         return sb.toString();
+    }
+    private String timestamp() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+        return dtf.format(LocalDateTime.now());
     }
 
     public String compileStats() {
@@ -47,7 +74,6 @@ public final class MarkdownReporter {
         } else {
             sb.append("**NO DIFF**");
         }
-        sb.append("\n");
         return sb.toString();
     }
 
@@ -114,12 +140,27 @@ public final class MarkdownReporter {
     public static class Builder {
         private DiffInfo diffInfo = null;
         private boolean compact = true;
+        private String title = null;
+        private String pathOriginal = null;
+        private String pathRevised = null;
         public Builder(DiffInfo diffInfo) {
             Objects.requireNonNull(diffInfo);
             this.diffInfo = diffInfo;
         }
         public Builder compact(boolean compact) {
             this.compact = compact;
+            return this;
+        }
+        public Builder title(String title) {
+            this.title = title;
+            return this;
+        }
+        public Builder pathOriginal(String pathOriginal) {
+            this.pathOriginal = pathOriginal;
+            return this;
+        }
+        public Builder pathRevised(String pathRevised) {
+            this.pathRevised = pathRevised;
             return this;
         }
         public MarkdownReporter build() {
