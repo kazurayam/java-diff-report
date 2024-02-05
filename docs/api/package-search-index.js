@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"com.kazurayam.difflib.text"},{"l":"すべてのパッケージ","u":"allpackages-index.html"}];updateSearchResults();

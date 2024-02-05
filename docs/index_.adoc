@@ -1,0 +1,28 @@
+= java-diff-report
+
+== What is this for
+
+The java-diff-report is a small Java libary which aims to supplement the link:https://github.com/java-diff-utils/java-diff-utils[java-diff-utils] library. The java-diff-report accepts 2 input texts (as Files, Paths, Strings, URLs) and call the java-diff-utils to generate the Diff. The java-diff-report accepts the output Diff info from the java-diff-utils libary and compiles a report in Markdown format.
+
+== How to get the jar
+
+The jar is available at
+
+- link:https://mvnrepository.com/artifact/com.kazurayam/java-diff-report[Maven Central]
+
+- link:https://github.com/kazurayam/java-diff-report/releases[Releases page]  of the project's GitHub repository
+
+== API Javadoc
+
+- link:https://kazurayam.github.io/java-diff-report/api/[javadoc]
+
+== Sample usage
+
+[source,java]
+----
+include::../src/main/java/com/kazurayam/sample/App.java[lines=1..100]
+----
+
+Output:
+
+- link:https://kazurayam.github.io/java-diff-report/sample-report.md[]

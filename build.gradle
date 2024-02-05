@@ -70,7 +70,7 @@ javadoc {
 }
 task copyJavadocToDocsDir(type: Copy) {
     from "build/docs/javadoc"
-    into "../docs/api"
+    into "./docs/api"
 }
 javadoc.finalizedBy copyJavadocToDocsDir
 
@@ -81,6 +81,18 @@ jar {
     }
 }
 
+/**
+ * translate docs/index_.adoc to docs/index.md
+ * with instruction to Jekyll Blog to generate TOC
+ */
+task gendocs {
+    doLast {
+        exec {
+            workingDir './docs'
+            commandLine './adoc2md.sh', '-t'
+        }
+    }
+}
 publishing {
     publications {
         javadiffreport(MavenPublication) {
@@ -146,3 +158,4 @@ signing {
 tasks.withType(Sign) {
     onlyIf { isReleaseVersion }
 }
+
