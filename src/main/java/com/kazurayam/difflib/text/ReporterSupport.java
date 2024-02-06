@@ -58,6 +58,7 @@ public final class ReporterSupport {
             if (focused.isTaggedInsertedDeletedChanged()) {
                 if (division == null) {
                     division = new NDRDivision();
+                    container.add(division);
                     for (int marginTopCount = 1;
                          marginTopCount <= MARGIN;
                          marginTopCount++) {
@@ -78,7 +79,6 @@ public final class ReporterSupport {
                             division.add(allEntries.get(marginBottomIndex));
                         }
                     }
-                    container.add(division);
                     division = null;
                 }
             }

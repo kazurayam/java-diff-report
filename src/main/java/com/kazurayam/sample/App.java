@@ -12,7 +12,7 @@ public class App {
     public static void main(String[] args) throws Exception {
         Path original = Paths.get("./src/test/fixtures/text1.txt");
         Path revised = Paths.get("./src/test/fixtures/text2.txt");
-        Path output = Paths.get("./build/temp/report.md");
+        Path output = Paths.get("./build/tmp/report.md");
         Files.createDirectories(output.getParent());
 
         DiffInfo diffInfo = Differ.diffFiles(original, revised);
