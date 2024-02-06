@@ -15,16 +15,19 @@ public final class MarkdownReporter {
 
     private final DiffInfo diffInfo;
     private final boolean compact;
+    private final int margin;
 
     private MarkdownReporter(Builder builder) {
         this.diffInfo = builder.diffInfo;
         this.compact = builder.compact;
+        this.margin = builder.margin;
     }
 
     public boolean getCompact() {
         return this.compact;
     }
 
+    public int getMargin() { return this.margin; }
 
     public String compileMarkdownReport() {
         StringBuilder sb = new StringBuilder();
@@ -49,7 +52,7 @@ public final class MarkdownReporter {
         sb.append(mdStats(diffInfo));
         sb.append("\n");
         sb.append("### Detail\n");
-        sb.append(mdDetail(diffInfo, compact));
+        sb.append(mdDetail(diffInfo, compact, margin));
         return sb.toString();
     }
     private String timestamp() {
@@ -82,14 +85,14 @@ public final class MarkdownReporter {
         return sb.toString();
     }
 
-    static String mdDetail(DiffInfo diffInfo, boolean compact) {
+    static String mdDetail(DiffInfo diffInfo, boolean compact, final int MARGIN) {
         StringBuilder sb = new StringBuilder();
         sb.append("|row#|S|original|revised|\n");
         sb.append("|----|-|--------|-------|\n");
         List<DiffRow> allRows = diffInfo.getRows();
         if (compact) {
             // divide a list of DiffRow objects into a set of NDRDivision objects.
-            List<NDRDivision> container = ReporterSupport.divide(allRows);
+            List<NDRDivision> container = ReporterSupport.divide(allRows, MARGIN);
             // in the Compact format; hide the equal lines to shrink the report in size
             for (int cx = 0; cx < container.size(); cx++) {
                 NDRDivision division = container.get(cx);
@@ -136,12 +139,20 @@ public final class MarkdownReporter {
     public static class Builder {
         private DiffInfo diffInfo = null;
         private boolean compact = true;
+        private int margin = 2;
         public Builder(DiffInfo diffInfo) {
             Objects.requireNonNull(diffInfo);
             this.diffInfo = diffInfo;
         }
         public Builder compact(boolean compact) {
             this.compact = compact;
+            return this;
+        }
+        public Builder margin(int margin) {
+            if (margin < 0 || margin > 5) {
+                throw new IllegalArgumentException("margine must be in the range of [0..5]");
+            }
+            this.margin = margin;
             return this;
         }
         public MarkdownReporter build() {

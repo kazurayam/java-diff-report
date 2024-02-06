@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public final class ReporterSupport {
 
@@ -44,11 +45,13 @@ public final class ReporterSupport {
         return allEntries;
     }
 
-    static List<NDRDivision> divide(List<DiffRow> diffRows) {
+    static List<NDRDivision> divide(List<DiffRow> diffRows, final int MARGIN) {
+        Objects.requireNonNull(diffRows);
+        if (MARGIN < 0 || MARGIN > 5) {
+            throw new IllegalArgumentException("the margin must be in the range of [0..5]");
+        }
         List<NumberedDiffRow> allEntries = toNumberedDiffRows(diffRows);
         List<NDRDivision> container = new ArrayList<>();
-        final int MARGIN_TOP = 2;
-        final int MARGIN_BOTTOM = 2;
         NDRDivision division = null;
         for (int ax = 0; ax < allEntries.size(); ax++) {
             NumberedDiffRow focused = allEntries.get(ax);
@@ -56,7 +59,7 @@ public final class ReporterSupport {
                 if (division == null) {
                     division = new NDRDivision();
                     for (int marginTopCount = 1;
-                         marginTopCount <= MARGIN_TOP;
+                         marginTopCount <= MARGIN;
                          marginTopCount++) {
                         int marginTopIndex = ax - marginTopCount;
                         if (marginTopIndex >= 0) {
@@ -68,7 +71,7 @@ public final class ReporterSupport {
             } else { // allEntries.get(ax).isEqual() == true
                 if (division != null) {
                     for (int marginBottomCount = 0;
-                         marginBottomCount < MARGIN_BOTTOM;
+                         marginBottomCount < MARGIN;
                          marginBottomCount++) {
                         int marginBottomIndex = ax + marginBottomCount;
                         if (marginBottomIndex < allEntries.size()) {

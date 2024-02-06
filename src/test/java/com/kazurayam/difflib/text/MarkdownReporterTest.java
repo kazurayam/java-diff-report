@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class MarkdownReporterTest {
 
@@ -35,14 +36,24 @@ public class MarkdownReporterTest {
 
     @Test
     public void test_mdDetail_full() {
-        String report = MarkdownReporter.mdDetail(diffInfo, false);
+        String report = MarkdownReporter.mdDetail(diffInfo, false, 0);
         logger.debug("[test_mdDetail_full]\n" + report);
     }
 
     @Test
-    public void test_mdDetail_compact() {
-        String report = MarkdownReporter.mdDetail(diffInfo, true);
-        logger.debug("[test_mdDetail_compact]\n" + report);
+    public void test_mdDetail_compact_margin0() {
+        String report = MarkdownReporter.mdDetail(diffInfo, true, 0);
+        logger.debug("[test_mdDetail_compact_margine0]\n" + report);
+    }
+
+    @Test
+    public void test_mdDetail_compact_too_large_margin() {
+        try {
+            String report = MarkdownReporter.mdDetail(diffInfo, true, 999);
+            fail("test_mdDetail_compact_too_large_margine was expected to fail, but actually not");
+        } catch (IllegalArgumentException e) {
+            logger.debug("[test_mdDetail_compact_too_large_margin] failed as expected");
+        }
     }
 
     @Test
@@ -56,7 +67,9 @@ public class MarkdownReporterTest {
         String methodName = "testCompileMarkdownReport_Paths_as_input";
         String title = "Sample diff report of 2 HTML files";
         diffInfo.setTitle(title);
-        MarkdownReporter reporter = new MarkdownReporter.Builder(diffInfo).build();
+        MarkdownReporter reporter =
+                new MarkdownReporter.Builder(diffInfo)
+                        .margin(3).build();
 
         String report = reporter.compileMarkdownReport();
         logger.debug(String.format("[%s]\n%s", methodName, report));
@@ -80,10 +93,12 @@ public class MarkdownReporterTest {
         DiffInfo di =
                 new DiffInfo.Builder(new StringReader(string1), new StringReader(string2))
                         .title(title)
-                        .pathOriginal("some boring text")
-                        .pathRevised("some fancy text")
+                        .pathOriginal("you can write any explanatory text here")
+                        .pathRevised("and any fancy text here")
                         .build();
-        MarkdownReporter reporter = new MarkdownReporter.Builder(di).build();
+        MarkdownReporter reporter =
+                new MarkdownReporter.Builder(di)
+                        .margin(1).build();
 
         String report = reporter.compileMarkdownReport();
         logger.debug(String.format("[%s]\n%s", methodName, report));
