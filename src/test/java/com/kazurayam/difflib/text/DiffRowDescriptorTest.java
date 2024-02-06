@@ -14,21 +14,21 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NumberedDiffRowTest {
+public class DiffRowDescriptorTest {
 
-    private static Logger logger = LoggerFactory.getLogger(NumberedDiffRowTest.class);
+    private static Logger logger = LoggerFactory.getLogger(DiffRowDescriptorTest.class);
 
     private static final TestOutputOrganizer too =
-            new TestOutputOrganizer.Builder(NumberedDiffRowTest.class)
+            new TestOutputOrganizer.Builder(DiffRowDescriptorTest.class)
                     .outputDirPath("build/tmp/testOutput")
-                    .subDirPath(NumberedDiffRowTest.class)
+                    .subDirPath(DiffRowDescriptorTest.class)
                     .build();
     private static final Path fixturesDir = too.getProjectDir().resolve("src/test/fixtures");
     private static final Path text1 = fixturesDir.resolve("text1.txt");
     private static final Path text2 = fixturesDir.resolve("text2.txt");
     private static DiffInfo diffInfo;
     private static List<DiffRow> diffRows;
-    private static List<NumberedDiffRow> listNDR;
+    private static List<DiffRowDescriptor> listNDR;
 
     @BeforeAll
     public static void beforeAll() throws IOException {
@@ -36,20 +36,20 @@ public class NumberedDiffRowTest {
         diffRows = diffInfo.getRows();
         listNDR = new ArrayList<>();
         for (int i = 0; i < diffRows.size(); i++) {
-            listNDR.add(new NumberedDiffRow(i + 1, diffRows.get(i)));
+            listNDR.add(new DiffRowDescriptor(i + 1, diffRows.get(i)));
         }
         assertThat(listNDR).isNotEmpty();
     }
 
     @Test
     public void test_getNumber() {
-        NumberedDiffRow ndr = listNDR.get(0);
+        DiffRowDescriptor ndr = listNDR.get(0);
         assertThat(ndr.getNumber()).isEqualTo(1);
     }
 
     @Test
     public void test_getDiffRow() {
-        NumberedDiffRow ndr = listNDR.get(listNDR.size() - 1);
+        DiffRowDescriptor ndr = listNDR.get(listNDR.size() - 1);
         assertThat(ndr.getDiffRow().getTag()).isEqualTo(DiffRow.Tag.EQUAL);
     }
 }

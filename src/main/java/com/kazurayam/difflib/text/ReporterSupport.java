@@ -35,29 +35,29 @@ public final class ReporterSupport {
         }
     }
 
-    static List<NumberedDiffRow> toNumberedDiffRows(List<DiffRow> diffRows) {
-        List<NumberedDiffRow> allEntries = new ArrayList<>();
+    static List<DiffRowDescriptor> toNumberedDiffRows(List<DiffRow> diffRows) {
+        List<DiffRowDescriptor> allEntries = new ArrayList<>();
         for (int i = 0; i < diffRows.size(); i++) {
-            NumberedDiffRow tdr =
-                    new NumberedDiffRow(i + 1, diffRows.get(i));
+            DiffRowDescriptor tdr =
+                    new DiffRowDescriptor(i + 1, diffRows.get(i));
             allEntries.add(tdr);
         }
         return allEntries;
     }
 
-    static List<NDRDivision> divide(List<DiffRow> diffRows, final int MARGIN) {
+    static List<DiffRowDescriptorSegment> divide(List<DiffRow> diffRows, final int MARGIN) {
         Objects.requireNonNull(diffRows);
         if (MARGIN < 0 || MARGIN > 5) {
             throw new IllegalArgumentException("the margin must be in the range of [0..5]");
         }
-        List<NumberedDiffRow> allEntries = toNumberedDiffRows(diffRows);
-        List<NDRDivision> container = new ArrayList<>();
-        NDRDivision division = null;
+        List<DiffRowDescriptor> allEntries = toNumberedDiffRows(diffRows);
+        List<DiffRowDescriptorSegment> container = new ArrayList<>();
+        DiffRowDescriptorSegment division = null;
         for (int ax = 0; ax < allEntries.size(); ax++) {
-            NumberedDiffRow focused = allEntries.get(ax);
+            DiffRowDescriptor focused = allEntries.get(ax);
             if (focused.isTaggedInsertedDeletedChanged()) {
                 if (division == null) {
-                    division = new NDRDivision();
+                    division = new DiffRowDescriptorSegment();
                     container.add(division);
                     for (int marginTopCount = 1;
                          marginTopCount <= MARGIN;
@@ -88,18 +88,18 @@ public final class ReporterSupport {
         return mergeOverlaps(container);
     }
 
-    static List<NDRDivision> mergeOverlaps(List<NDRDivision> list) {
+    static List<DiffRowDescriptorSegment> mergeOverlaps(List<DiffRowDescriptorSegment> list) {
         if (list.size() >= 2) {
-            NDRDivision first = list.get(0);
-            NDRDivision second = list.get(1);
+            DiffRowDescriptorSegment first = list.get(0);
+            DiffRowDescriptorSegment second = list.get(1);
             if (first.overlapsWith(second)) {
                 first.merge(second);
-                List<NDRDivision> newList = new ArrayList<>();
+                List<DiffRowDescriptorSegment> newList = new ArrayList<>();
                 newList.add(first);
                 newList.addAll(list.subList(2, list.size()));
                 return mergeOverlaps(newList);
             } else {
-                List<NDRDivision> newList = new ArrayList<>();
+                List<DiffRowDescriptorSegment> newList = new ArrayList<>();
                 newList.add(first);
                 newList.addAll(mergeOverlaps(list.subList(1, list.size())));
                 return newList;

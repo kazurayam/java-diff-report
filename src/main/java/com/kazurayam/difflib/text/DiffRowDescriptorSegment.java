@@ -6,43 +6,43 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class NDRDivision {
-    private List<NumberedDiffRow> listNDR;
-    public NDRDivision() {
+public class DiffRowDescriptorSegment {
+    private List<DiffRowDescriptor> listNDR;
+    public DiffRowDescriptorSegment() {
         listNDR = new ArrayList<>();
     }
-    public void add(int index, NumberedDiffRow ndr) {
+    public void add(int index, DiffRowDescriptor ndr) {
         listNDR.add(index, ndr);
     }
-    public void add(NumberedDiffRow ndr) {
+    public void add(DiffRowDescriptor ndr) {
         listNDR.add(ndr);
     }
-    public boolean overlapsWith(NDRDivision other) {
+    public boolean overlapsWith(DiffRowDescriptorSegment other) {
         if (this.lastSeq() < other.firstSeq()) return false;
         if (other.lastSeq() < this.firstSeq()) return false;
         return true;
     }
-    public void merge(NDRDivision other) {
-        Set<NumberedDiffRow> bag = new HashSet<>();
+    public void merge(DiffRowDescriptorSegment other) {
+        Set<DiffRowDescriptor> bag = new HashSet<>();
         bag.addAll(this.getList());
         bag.addAll(other.getList());
         this.listNDR = bag.stream().sorted().collect(Collectors.toList());
     }
-    public NumberedDiffRow get(int i) {
+    public DiffRowDescriptor get(int i) {
         return this.listNDR.get(i);
     }
-    public NumberedDiffRow getFist() {
+    public DiffRowDescriptor getFist() {
         return this.listNDR.get(0);
     }
-    public NumberedDiffRow getLast() {
+    public DiffRowDescriptor getLast() {
         return this.listNDR.get(listNDR.size() - 1);
     }
-    public List<NumberedDiffRow> getList() {
+    public List<DiffRowDescriptor> getList() {
         return this.listNDR;
     }
     public List<Integer> getSeqList() {
         List<Integer> seqList = new ArrayList<>();
-        for (NumberedDiffRow ndr : listNDR) {
+        for (DiffRowDescriptor ndr : listNDR) {
             seqList.add(ndr.getNumber());
         }
         return seqList;

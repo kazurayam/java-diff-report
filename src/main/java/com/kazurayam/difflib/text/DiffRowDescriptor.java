@@ -2,11 +2,11 @@ package com.kazurayam.difflib.text;
 
 import com.github.difflib.text.DiffRow;
 
-public class NumberedDiffRow implements Comparable<NumberedDiffRow> {
+public class DiffRowDescriptor implements Comparable<DiffRowDescriptor> {
 
     private final int sequenceNumber;
     private final DiffRow diffRow;
-    public NumberedDiffRow(int sequenceNumber, DiffRow diffRow) {
+    public DiffRowDescriptor(int sequenceNumber, DiffRow diffRow) {
         this.sequenceNumber = sequenceNumber;
         this.diffRow = diffRow;
     }
@@ -23,15 +23,15 @@ public class NumberedDiffRow implements Comparable<NumberedDiffRow> {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof NumberedDiffRow)) {
+        if (!(obj instanceof DiffRowDescriptor)) {
             return false;
         }
-        NumberedDiffRow other = (NumberedDiffRow)obj;
+        DiffRowDescriptor other = (DiffRowDescriptor)obj;
         return this.sequenceNumber == other.getNumber();
     }
 
     @Override
-    public int compareTo(NumberedDiffRow other) {
+    public int compareTo(DiffRowDescriptor other) {
         return this.sequenceNumber - other.getNumber();
     }
 }
