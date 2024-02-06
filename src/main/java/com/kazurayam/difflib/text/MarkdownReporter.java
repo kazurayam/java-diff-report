@@ -92,11 +92,12 @@ public final class MarkdownReporter {
         List<DiffRow> allRows = diffInfo.getRows();
         if (compact) {
             // divide a list of DiffRow objects into a set of NDRDivision objects.
-            List<DiffRowDescriptorSegment> container = ReporterSupport.divide(allRows, MARGIN);
+            List<DiffRowDescriptor> allDRD = ReporterSupport.toDiffRowDescriptorList(allRows);
+            List<DRDSegment> container = ReporterSupport.divide(allDRD, MARGIN);
             // in the Compact format; hide the equal lines to shrink the report in size
             for (int cx = 0; cx < container.size(); cx++) {
-                DiffRowDescriptorSegment division = container.get(cx);
-                if (cx == 0 && division.get(0).getNumber() > 1) {
+                DRDSegment division = container.get(cx);
+                if (cx == 0 && division.get(0).getSequence() > 1) {
                     sb.append(mdGap());
                     sb.append("\n");
                 }
@@ -105,21 +106,23 @@ public final class MarkdownReporter {
                     sb.append("\n");
                 }
                 for (int dx = 0; dx < division.size(); dx++) {
-                    DiffRowDescriptor ndr = division.get(dx);
-                    sb.append(mdFormatDiffRow(ndr.getNumber(), ndr.getDiffRow()));
+                    DiffRowDescriptor drd = division.get(dx);
+                    DiffRow dr = drd.findDiffRow(allRows);
+                    sb.append(mdFormatDiffRow(drd.getSequence(), dr));
                     sb.append("\n");
                 }
                 if (cx == (container.size() - 1) &&
-                        division.getLast().getNumber() < allRows.size()) {
+                        division.getLast().getSequence() < allRows.size()) {
                     sb.append(mdGap());
                     sb.append("\n");
                 }
             }
         } else {
             // in the Full format; all lines are printed
-            List<DiffRowDescriptor> listNDR = ReporterSupport.toNumberedDiffRows(diffInfo.getRows());
-            for (DiffRowDescriptor ndr : listNDR) {
-                sb.append(mdFormatDiffRow(ndr.getNumber(), ndr.getDiffRow()));
+            List<DiffRowDescriptor> listNDR = ReporterSupport.toDiffRowDescriptorList(diffInfo.getRows());
+            for (DiffRowDescriptor drd : listNDR) {
+                DiffRow dr = drd.findDiffRow(allRows);
+                sb.append(mdFormatDiffRow(drd.getSequence(), dr));
                 sb.append("\n");
             }
         }

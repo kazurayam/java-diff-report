@@ -2,23 +2,29 @@ package com.kazurayam.difflib.text;
 
 import com.github.difflib.text.DiffRow;
 
+import java.util.List;
+
 public class DiffRowDescriptor implements Comparable<DiffRowDescriptor> {
 
-    private final int sequenceNumber;
-    private final DiffRow diffRow;
-    public DiffRowDescriptor(int sequenceNumber, DiffRow diffRow) {
-        this.sequenceNumber = sequenceNumber;
-        this.diffRow = diffRow;
+    private final int sequence;
+    private final DiffRow.Tag tag;
+    public DiffRowDescriptor(int listIndex, DiffRow diffRow) {
+        this.sequence = listIndex + 1;
+        this.tag = diffRow.getTag();
     }
-    public int getNumber() { return sequenceNumber; }
-    public DiffRow getDiffRow() { return diffRow; }
-    boolean isTaggedInsertedDeletedChanged() {
-        return (this.getDiffRow().getTag() == DiffRow.Tag.INSERT ||
-                this.getDiffRow().getTag() == DiffRow.Tag.DELETE ||
-                this.getDiffRow().getTag() == DiffRow.Tag.CHANGE);
+    public DiffRow findDiffRow(List<DiffRow> diffRow) {
+        return diffRow.get(this.sequence - 1);
     }
-    boolean isTaggedEqual() {
-        return this.getDiffRow().getTag() == DiffRow.Tag.EQUAL;
+
+    public int getSequence() { return sequence; }
+    public DiffRow.Tag getTag() { return tag; }
+    public boolean isTaggedInsertedDeletedChanged() {
+        return (tag == DiffRow.Tag.INSERT ||
+                tag == DiffRow.Tag.DELETE ||
+                tag == DiffRow.Tag.CHANGE);
+    }
+    public boolean isTaggedEqual() {
+        return tag == DiffRow.Tag.EQUAL;
     }
 
     @Override
@@ -27,11 +33,11 @@ public class DiffRowDescriptor implements Comparable<DiffRowDescriptor> {
             return false;
         }
         DiffRowDescriptor other = (DiffRowDescriptor)obj;
-        return this.sequenceNumber == other.getNumber();
+        return this.sequence == other.getSequence();
     }
 
     @Override
     public int compareTo(DiffRowDescriptor other) {
-        return this.sequenceNumber - other.getNumber();
+        return this.sequence - other.getSequence();
     }
 }
