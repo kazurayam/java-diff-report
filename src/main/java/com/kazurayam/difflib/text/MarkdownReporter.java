@@ -15,16 +15,10 @@ public final class MarkdownReporter {
 
     private final DiffInfo diffInfo;
     private final boolean compact;
-    private final String title;
-    private final String pathOriginal;
-    private final String pathRevised;
 
     private MarkdownReporter(Builder builder) {
         this.diffInfo = builder.diffInfo;
         this.compact = builder.compact;
-        this.title = builder.title;
-        this.pathOriginal = builder.pathOriginal;
-        this.pathRevised = builder.pathRevised;
     }
 
     public boolean getCompact() {
@@ -34,17 +28,19 @@ public final class MarkdownReporter {
 
     public String compileMarkdownReport() {
         StringBuilder sb = new StringBuilder();
-        if (title != null) {
-            sb.append(String.format("## %s\n", title));
+        if (diffInfo.getTitle() != null) {
+            sb.append(String.format("## %s\n", diffInfo.getTitle()));
         }
-        if (pathOriginal != null || pathRevised != null) {
+        if (diffInfo.getPathOriginal() != null || diffInfo.getPathRevised() != null) {
             sb.append("### Sources\n");
         }
-        if (pathOriginal != null) {
-            sb.append("- original : " + ReporterSupport.shortenPathString(pathOriginal) + "\n");
+        if (diffInfo.getPathOriginal() != null) {
+            sb.append("- original : " +
+                    ReporterSupport.shortenPathString(diffInfo.getPathOriginal()) + "\n");
         }
-        if (pathRevised != null) {
-            sb.append("- revised : " + ReporterSupport.shortenPathString(pathRevised) + "\n");
+        if (diffInfo.getPathRevised() != null) {
+            sb.append("- revised : " +
+                    ReporterSupport.shortenPathString(diffInfo.getPathRevised()) + "\n");
         }
         sb.append("\n");
         sb.append("### Stats\n");
@@ -140,27 +136,12 @@ public final class MarkdownReporter {
     public static class Builder {
         private DiffInfo diffInfo = null;
         private boolean compact = true;
-        private String title = null;
-        private String pathOriginal = null;
-        private String pathRevised = null;
         public Builder(DiffInfo diffInfo) {
             Objects.requireNonNull(diffInfo);
             this.diffInfo = diffInfo;
         }
         public Builder compact(boolean compact) {
             this.compact = compact;
-            return this;
-        }
-        public Builder title(String title) {
-            this.title = title;
-            return this;
-        }
-        public Builder pathOriginal(String pathOriginal) {
-            this.pathOriginal = pathOriginal;
-            return this;
-        }
-        public Builder pathRevised(String pathRevised) {
-            this.pathRevised = pathRevised;
             return this;
         }
         public MarkdownReporter build() {

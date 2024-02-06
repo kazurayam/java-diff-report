@@ -31,4 +31,4 @@ Output:
 
 This will be rendered as this:
 
-image:images/sample-report-fullpage-screenshot.png[]]
+image:images/sample-report-compact-screenshot.png[]]

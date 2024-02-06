@@ -1,6 +1,7 @@
 package com.kazurayam.difflib.text;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +29,10 @@ import java.util.stream.Collectors;
 public final class Differ {
 
     private Differ() {}
+
+    public static DiffInfo diffFiles(File file1, File file2) throws IOException {
+        return diffFiles(file1.toPath(), file2.toPath());
+    }
 
     public static DiffInfo diffFiles(Path file1, Path file2) throws IOException {
         Objects.requireNonNull(file1);

@@ -10,13 +10,15 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 public final class DiffInfo {
-    private String pathOriginal = null;
-    private String pathRevised = null;
+    private String title;
+    private String pathOriginal;
+    private String pathRevised;
     private final List<DiffRow> rows;
     private final List<DiffRow> insertedRows;
     private final List<DiffRow> deletedRows;
@@ -27,8 +29,24 @@ public final class DiffInfo {
     private static final String TAG_DELETED_COLOR  = "#ffeef0";
     private static final String TAG_CHANGED_COLOR  = "#dbedff";
 
+    public void setTitle(String title) {
+        Objects.requireNonNull(title);
+        this.title = title;
+    }
+    public String getTitle() { return title; }
+
+    public void setPathOriginal(String pathOriginal) {
+        Objects.requireNonNull(pathOriginal);
+        this.pathOriginal = pathOriginal;
+    }
     public String getPathOriginal() { return pathOriginal; }
+
+    public void setPathRevised(String pathRevised) {
+        Objects.requireNonNull(pathRevised);
+        this.pathRevised = pathRevised;
+    }
     public String getPathRevised() { return pathRevised; }
+
     public List<DiffRow> getRows() { return rows; }
     public List<DiffRow> getInsertedRows() { return insertedRows; }
     public List<DiffRow> getDeletedRows() { return deletedRows; }
@@ -39,13 +57,15 @@ public final class DiffInfo {
         return this.getEqualRows().size() < this.getRows().size();
     }
 
-    private DiffInfo(String pathOriginal,
+    private DiffInfo(String title,
+                     String pathOriginal,
                      String pathRevised,
                      List<DiffRow> rows,
                      List<DiffRow> insertedRows,
                      List<DiffRow> deletedRows,
                      List<DiffRow> changedRows,
                      List<DiffRow> equalRows) {
+        this.title = title;
         this.pathOriginal = pathOriginal;
         this.pathRevised = pathRevised;
         this.rows = rows;
@@ -56,8 +76,9 @@ public final class DiffInfo {
     }
 
     public static class Builder {
-        private String pathOriginal = ".";
-        private String pathRevised = ".";
+        private String title = null;
+        private String pathOriginal = null;
+        private String pathRevised = null;
         private final List<String> originalLines;
         private final List<String> revisedLines;
 
@@ -84,6 +105,23 @@ public final class DiffInfo {
             this.originalLines = readAllLines(rdr1);
             this.revisedLines = readAllLines(rdr2);
         }
+        Builder title(String title) {
+            Objects.requireNonNull(title);
+            this.title = title;
+            return this;
+        }
+
+        Builder pathOriginal(String pathOriginal) {
+            Objects.requireNonNull(pathOriginal);
+            this.pathOriginal = pathOriginal;
+            return this;
+        }
+
+        Builder pathRevised(String pathRevised) {
+            Objects.requireNonNull(pathRevised);
+            this.pathRevised = pathRevised;
+            return this;
+        }
 
         private List<String> readAllLines(Reader reader) {
             return new BufferedReader(reader).lines().collect(Collectors.toList());
@@ -103,7 +141,7 @@ public final class DiffInfo {
             List<DiffRow> deletedRows  = rows.stream().filter(diffRow -> diffRow.getTag() == DiffRow.Tag.DELETE).collect(Collectors.toList());
             List<DiffRow> changedRows  = rows.stream().filter(diffRow -> diffRow.getTag() == DiffRow.Tag.CHANGE).collect(Collectors.toList());
             List<DiffRow> equalRows    = rows.stream().filter(diffRow -> diffRow.getTag() == DiffRow.Tag.EQUAL).collect(Collectors.toList());
-            return new DiffInfo(pathOriginal, pathRevised,
+            return new DiffInfo(title, pathOriginal, pathRevised,
                     rows, insertedRows, deletedRows, changedRows, equalRows);
         }
     }

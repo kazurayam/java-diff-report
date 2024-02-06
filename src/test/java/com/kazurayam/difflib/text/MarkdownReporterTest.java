@@ -2,11 +2,13 @@ package com.kazurayam.difflib.text;
 
 import com.kazurayam.unittest.TestOutputOrganizer;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -24,10 +26,10 @@ public class MarkdownReporterTest {
     private static final Path fixturesDir = too.getProjectDir().resolve("src/test/fixtures");
     private static final Path text1 = fixturesDir.resolve("left.html");
     private static final Path text2 = fixturesDir.resolve("right.html");
-    private static DiffInfo diffInfo;
+    private DiffInfo diffInfo;
 
-    @BeforeAll
-    public static void beforeAll() throws IOException {
+    @BeforeEach
+    public void beforeEach() throws IOException {
         diffInfo = new DiffInfo.Builder(text1, text2).build();
     }
 
@@ -50,13 +52,11 @@ public class MarkdownReporterTest {
     }
 
     @Test
-    public void testCompileMarkdownReport() throws IOException {
-        String methodName = "testCompileMarkdownReport";
-        MarkdownReporter reporter = new MarkdownReporter.Builder(diffInfo)
-                .title("Sample diff report of 2 HTML files")
-                .pathOriginal(text1.toString())
-                .pathRevised(text2.toString())
-                .build();
+    public void testCompileMarkdownReport_Paths_as_input() throws IOException {
+        String methodName = "testCompileMarkdownReport_Paths_as_input";
+        String title = "Sample diff report of 2 HTML files";
+        diffInfo.setTitle(title);
+        MarkdownReporter reporter = new MarkdownReporter.Builder(diffInfo).build();
 
         String report = reporter.compileMarkdownReport();
         logger.debug(String.format("[%s]\n%s", methodName, report));
@@ -72,9 +72,38 @@ public class MarkdownReporterTest {
     }
 
     @Test
+    public void testCompileMarkdownReport_Strings_as_input() throws IOException {
+        String methodName = "testCompileMarkdownReport_Strings_as_input";
+        String string1 = "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\nKKK\nLLL\nMMM\nNNN\n";
+        String string2 = "AAA\nXXX\nBBB\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\nKKK\nLLL\nmmm\nNNN\n";
+        String title = "Sample diff report of 2 strings";
+        DiffInfo di =
+                new DiffInfo.Builder(new StringReader(string1), new StringReader(string2))
+                        .title(title)
+                        .pathOriginal("some boring text")
+                        .pathRevised("some fancy text")
+                        .build();
+        MarkdownReporter reporter = new MarkdownReporter.Builder(di).build();
+
+        String report = reporter.compileMarkdownReport();
+        logger.debug(String.format("[%s]\n%s", methodName, report));
+        assertThat(report)
+                .contains("- original")
+                .contains("- revised")
+                .contains("**DIFFERENT**")
+                .contains("|row#|S|original|revised|")
+                .contains("|----|-|--------|-------|");
+        too.cleanMethodOutputDirectory(methodName);
+        Path output = too.getMethodOutputDirectory(methodName).resolve("output.md");
+        Files.writeString(output, report);
+    }
+
+
+    @Test
     public void test_title() {
         String title = "γνῶθι σεαυτόν";
-        MarkdownReporter reporter = new MarkdownReporter.Builder(diffInfo).title(title).build();
+        diffInfo.setTitle(title);
+        MarkdownReporter reporter = new MarkdownReporter.Builder(diffInfo).build();
         String report = reporter.compileMarkdownReport();
         assertThat(report).contains(String.format("## %s", title));
     }
