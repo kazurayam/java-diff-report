@@ -51,12 +51,12 @@ public final class MarkdownReporter {
                     ReporterSupport.shortenPathString(diffInfo.getPathRevised()) + "\n");
         }
         sb.append("\n");
-        sb.append("### Stats\n");
-        sb.append(String.format(" %s at %s", mdDifferentOrNot(diffInfo), timestamp()));
+        sb.append("### Stats\n\n");
+        sb.append(String.format("%s at %s\n", mdDifferentOrNot(diffInfo), timestamp()));
         sb.append("\n");
         sb.append(mdStats(diffInfo));
         sb.append("\n");
-        sb.append("### Detail\n");
+        sb.append("### Detail\n\n");
         sb.append(mdDetail(diffInfo, compact, margin));
         return sb.toString();
     }
