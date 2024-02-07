@@ -8,7 +8,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * <p>takes diff of 2 text files to generate a diff report in Markdown,
+ * write the result into a file. The input texts are rather short,
+ * hence the output result will be concise as well.</p>
+ */
 public class App {
+
+    private App() {}
+
     public static void main(String[] args) throws Exception {
         Path original = Paths.get("./src/test/fixtures/text1.txt");
         Path revised = Paths.get("./src/test/fixtures/text2.txt");

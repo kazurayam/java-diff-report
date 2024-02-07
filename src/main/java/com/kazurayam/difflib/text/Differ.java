@@ -30,10 +30,20 @@ public final class Differ {
 
     private Differ() {}
 
+    /**
+     * Generates a @see com.kazurayam.difflib.text.DiffInfo object that contains the diff of 2 File objects
+     */
     public static DiffInfo diffFiles(File file1, File file2) throws IOException {
         return diffFiles(file1.toPath(), file2.toPath());
     }
 
+    /**
+     * Generates a D
+     * @param file1
+     * @param file2
+     * @return
+     * @throws IOException
+     */
     public static DiffInfo diffFiles(Path file1, Path file2) throws IOException {
         Objects.requireNonNull(file1);
         if (!Files.exists(file1)) {

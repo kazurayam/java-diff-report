@@ -6,6 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Sample code to demonstrate how to use the @see com.kazurayam.difflib.text.Differ and the related classes
+ *
+ * @author kazurayam
+ */
 public final class Main {
 
     private Path original;

@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * A segment of consective sequence of @see com.kazurayam.difflib.text.DiffRowDescriptor objects
+ * @author kazurayam
+ */
 public class DRDSegment {
     private List<DiffRowDescriptor> memory;
     public DRDSegment() {

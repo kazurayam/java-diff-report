@@ -3,7 +3,7 @@
  * This module extends the capability of the <a href="https://github.com/java-diff-utils/java-diff-utils">java-diff-utils</a> library.
  * </p>
  * <p>Sample usage</p>
- * <pre>{@code
+ * <pre>
  * package com.kazurayam.sample;
  *
  * import com.kazurayam.difflib.text.Differ;
@@ -27,8 +27,7 @@
  *         Files.writeString(output, reporter.compileMarkdownReport());
  *         System.out.println(reporter.compileStats());
  *     }
- * }
- * </pre>
+ * }</pre>
  *
  * @since 0.1.0
  * @author kazurayam

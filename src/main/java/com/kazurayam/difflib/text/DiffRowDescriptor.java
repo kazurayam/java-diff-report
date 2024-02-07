@@ -4,6 +4,12 @@ import com.github.difflib.text.DiffRow;
 
 import java.util.List;
 
+/**
+ * A pointer to a DiffRow entry in a List of DiffRows. A DiffRowDescription contains only 2 properties:
+ * int sequence, @see com.github.difflib.text.DiffRow. A DiffRowDescription does not contain a copy of a DiffRow object; therefore it is light-weighted.
+ * The List of DiffRows is supposed to be the one created by @see com.kazurayam.difflib.text.Differ#diffFiles(Path, Path) and others.
+ * @author kazurayam
+ */
 public class DiffRowDescriptor implements Comparable<DiffRowDescriptor> {
 
     private final int sequence;
@@ -12,7 +18,7 @@ public class DiffRowDescriptor implements Comparable<DiffRowDescriptor> {
         this.sequence = listIndex + 1;
         this.tag = diffRow.getTag();
     }
-    public DiffRow findDiffRow(List<DiffRow> diffRow) {
+    public DiffRow findDiffRowIn(List<DiffRow> diffRow) {
         return diffRow.get(this.sequence - 1);
     }
 

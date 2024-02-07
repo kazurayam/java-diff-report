@@ -27,7 +27,7 @@ The jar is available at
 
     import com.kazurayam.difflib.text.Differ;
     import com.kazurayam.difflib.text.DiffInfo;
-    import com.kazurayam.difflib.text.DiffInfoReporter;
+    import com.kazurayam.difflib.text.MarkdownReporter;
 
     import java.nio.file.Files;
     import java.nio.file.Path;
@@ -37,13 +37,14 @@ The jar is available at
         public static void main(String[] args) throws Exception {
             Path original = Paths.get("./src/test/fixtures/text1.txt");
             Path revised = Paths.get("./src/test/fixtures/text2.txt");
-            Path output = Paths.get("./build/temp/report.md");
+            Path output = Paths.get("./build/tmp/report.md");
             Files.createDirectories(output.getParent());
 
             DiffInfo diffInfo = Differ.diffFiles(original, revised);
-            Files.writeString(output,
-                    DiffInfoReporter.compileMarkdownReport(diffInfo));
-            System.out.println(DiffInfoReporter.compileStatsJson(diffInfo));
+            diffInfo.setTitle("Sample diff report of 2 text files");
+            MarkdownReporter reporter = new MarkdownReporter.Builder(diffInfo).build();
+            Files.writeString(output, reporter.compileMarkdownReport());
+            System.out.println(reporter.compileStats());
         }
     }
 
@@ -53,4 +54,4 @@ Output:
 
 This will be rendered as this:
 
-![sample report fullpage screenshot](images/sample-report-fullpage-screenshot.png)\]
+![sample report compact screenshot](images/sample-report-compact-screenshot.png)\]

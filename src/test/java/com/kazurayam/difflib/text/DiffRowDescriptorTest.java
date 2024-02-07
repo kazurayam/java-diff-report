@@ -74,7 +74,7 @@ public class DiffRowDescriptorTest {
         int index = 1;
         DiffRowDescriptor drd = new DiffRowDescriptor(index, diffRows.get(index));
         assertThat(drd.getSequence()).isEqualTo(2);
-        DiffRow dr = drd.findDiffRow(diffRows);
+        DiffRow dr = drd.findDiffRowIn(diffRows);
         assertThat(dr.getTag()).isEqualTo(DiffRow.Tag.INSERT);
     }
 }

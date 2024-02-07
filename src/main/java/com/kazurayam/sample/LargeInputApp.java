@@ -10,7 +10,15 @@ import java.nio.file.Paths;
 import java.net.URI;
 import java.net.URL;
 
+/**
+ * <p>takes diff of 2 text files to generate a diff report in Markdown,
+ * write the result into a file. The input texts are rather short,
+ * hence the output result will be concise as well.</p>
+ */
 public class LargeInputApp {
+
+    private void LargeInputApp() {}
+
     public static void main(String[] args) throws Exception {
         URL original = new URI("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css").toURL();
         URL revised = new URI("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css").toURL();

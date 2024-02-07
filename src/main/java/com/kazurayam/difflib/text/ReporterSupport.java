@@ -8,8 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Implements helper methods called by @see com.kazurayam.difflib.text.MarkdownReporter
+ * @author kazurayam
+ */
 public final class ReporterSupport {
 
+    private ReporterSupport() {}
     static String compileStats(DiffInfo diffInfo) {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
@@ -45,6 +50,26 @@ public final class ReporterSupport {
         return allEntries;
     }
 
+    /**
+     * <p>This divide method is called by @see com.kazurayam.difflib.text.MarkdownReporter#mdDetail </p>
+     *
+     * <p>The divide scans the drdList through to find DiffRowDescriptors of status INSERT,
+     * DELETE or CHANGE. Picks up a consecutive sequence of DiffRowDescriptors as a DRDSegment.
+     * Plus appends the preceding DiffRowDescriptors (default 2 lines) as margin-top,
+     * the following DiffRowDescriptors as margin-bottom into each DRDSegments.
+     * Returns the List of constructed DRDSegments. As the result, a long list of DiffRowDescriptors
+     * will be divided into a set of smaller number of segments, which contains far less number of
+     * DiffRowDescriptors of EQUAL status.</p>
+     *
+     * <p>Please note that the DRDSegments in the returned List will have overlaps.
+     * The caller can call @see com.kazurayam.difflib.text.ReporterSupport#mergeOverlaps to
+     * merge the overlapping DRDSegments united so that there is no duplicating sequence of
+     * DiffRowDescriptors.</p>
+     *
+     * @param drdList List of DiffRowDescriptor
+     * @param MARGIN number of DiffRowDescriptors of EQUAL status; can be in the range of [0..5]
+     * @return List of DRDSegments
+     */
     static List<DRDSegment> divide(List<DiffRowDescriptor> drdList, final int MARGIN) {
         Objects.requireNonNull(drdList);
         if (MARGIN < 0 || MARGIN > 5) {
@@ -87,6 +112,17 @@ public final class ReporterSupport {
         return mergeOverlaps(container);
     }
 
+    /**
+     * <p>This mergeOverlaps method is called by @see com.kazurayam.difflib.text.MarkdownReporter#mdDetail</p>
+     *
+     * <p>Check the input list of DRDSegments if the entries contains any duplication DiffRowDescriptors.
+     * Each DiffRowDescriptor is identified by the sequence number property, which is equal to the
+     * (index of DiffRow returned by the java-diff-utils + 1). If duplication is found,
+     * then 2 duplicating DRDSegments will be merged to avoid overlaps. </p>
+     *
+     * @param segments List of DRDSegments which created by @see com.kazurayam.difflib.text.ReporterSupport#devide
+     * @return List of DRDSegments which contains no duplicating DRDDescriptors
+     */
     static List<DRDSegment> mergeOverlaps(List<DRDSegment> segments) {
         if (segments.size() >= 2) {
             DRDSegment first = segments.get(0);

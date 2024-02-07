@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"com.kazurayam.difflib.text"},{"l":"すべてのパッケージ","u":"allpackages-index.html"}];updateSearchResults();
+packageSearchIndex = [{"l":"com.kazurayam.difflib.text"},{"l":"com.kazurayam.sample"},{"l":"すべてのパッケージ","u":"allpackages-index.html"}];updateSearchResults();

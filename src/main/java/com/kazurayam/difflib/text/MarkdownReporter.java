@@ -9,6 +9,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Compiles a Diff report in Markdown format
+ *
+ * @author kazurayam
+ */
 public final class MarkdownReporter {
 
     private static final Logger logger = LoggerFactory.getLogger(MarkdownReporter.class);
@@ -107,7 +112,7 @@ public final class MarkdownReporter {
                 }
                 for (int dx = 0; dx < division.size(); dx++) {
                     DiffRowDescriptor drd = division.get(dx);
-                    DiffRow dr = drd.findDiffRow(allRows);
+                    DiffRow dr = drd.findDiffRowIn(allRows);
                     sb.append(mdFormatDiffRow(drd.getSequence(), dr));
                     sb.append("\n");
                 }
@@ -121,7 +126,7 @@ public final class MarkdownReporter {
             // in the Full format; all lines are printed
             List<DiffRowDescriptor> listNDR = ReporterSupport.toDiffRowDescriptorList(diffInfo.getRows());
             for (DiffRowDescriptor drd : listNDR) {
-                DiffRow dr = drd.findDiffRow(allRows);
+                DiffRow dr = drd.findDiffRowIn(allRows);
                 sb.append(mdFormatDiffRow(drd.getSequence(), dr));
                 sb.append("\n");
             }
@@ -143,14 +148,34 @@ public final class MarkdownReporter {
         private DiffInfo diffInfo = null;
         private boolean compact = true;
         private int margin = 2;
+
+        /**
+         * Construct the Builder for @see com.kazurayam.difflib.text.MarkdownReporter
+         * @param diffInfo created by @see com.kazurayam.difflib.text.Differ
+         */
         public Builder(DiffInfo diffInfo) {
             Objects.requireNonNull(diffInfo);
             this.diffInfo = diffInfo;
         }
+
+        /**
+         *
+         * @param compact when true, you want the resulting report to have compact detail section,
+         *                where EQUAL rows are trimmed so that the report to be shorter.
+         *                when false, the detail section will be full.
+         *                Optional, will default to true
+         * @return an instance of @see com.kazurayam.difflib.text.MarkdownReporter.Builder
+         */
         public Builder compact(boolean compact) {
             this.compact = compact;
             return this;
         }
+
+        /**
+         * number of EQUAL rows in a DRDSegment
+         * @param margin integer of the range [0..5]
+         * @return an instance of @see com.kazurayam.difflib.text.MarkdownReporter.Builder
+         */
         public Builder margin(int margin) {
             if (margin < 0 || margin > 5) {
                 throw new IllegalArgumentException("margine must be in the range of [0..5]");
@@ -158,6 +183,10 @@ public final class MarkdownReporter {
             this.margin = margin;
             return this;
         }
+
+        /**
+         * constructs an instance of @see com.kazurayam.difflib.text.MarkdownReporter
+         */
         public MarkdownReporter build() {
             return new MarkdownReporter(this);
         }

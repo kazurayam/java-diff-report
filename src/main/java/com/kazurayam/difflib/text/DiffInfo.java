@@ -15,6 +15,11 @@ import java.util.stream.Collectors;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * The Data object for a Diff report.
+ *
+ * @author kazurayam
+ */
 public final class DiffInfo {
     private String title;
     private String pathOriginal;
